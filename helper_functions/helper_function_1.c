@@ -6,7 +6,7 @@
 /*   By: abenzaho <abenzaho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 14:30:54 by abenzaho          #+#    #+#             */
-/*   Updated: 2025/03/16 12:41:42 by abenzaho         ###   ########.fr       */
+/*   Updated: 2025/03/22 12:15:06 by abenzaho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ t_list	*ft_lstnew(void *ptr)
 {
 	t_list	*new_node;
 
-	new_node = (t_list *)malloc(sizeof(t_list));
+	new_node = (t_list *)ft_malloc(sizeof(t_list));
 	if (!new_node)
 		return (NULL);
 	new_node->ptr = ptr;
@@ -49,7 +49,6 @@ void	ft_lstdelone(t_list *lst, void (*del)(void*))
 	free(lst);
 }
 
-
 void	ft_lstclear(t_list **lst, void (*del)(void *))
 {
 	t_list	*temp;
@@ -63,4 +62,16 @@ void	ft_lstclear(t_list **lst, void (*del)(void *))
 		*lst = temp;
 	}
 	*lst = NULL;
+}
+
+int	ft_pcounter(char **s)
+{
+	int	i;
+
+	if (!s)
+		return (0);
+	i = 0;
+	while (s[i])
+		i++;
+	return (i);
 }

@@ -6,30 +6,63 @@
 /*   By: abenzaho <abenzaho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 14:16:16 by abenzaho          #+#    #+#             */
-/*   Updated: 2025/03/16 12:42:20 by abenzaho         ###   ########.fr       */
+/*   Updated: 2025/03/22 12:12:23 by abenzaho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <readline/readline.h>
-#include <readline/history.h>
+# include "utils.h"
+# include <signal.h>
+# include <readline/readline.h>
+# include <readline/history.h>
 
+typedef enum token_type {
+    WORD,
+    PIPE, 
+    RED_IN,
+    RED_OUT,
+    RED_APPEND,
+    HEREDOC
+}   t_token_type;
 
-typedef struct s_list
+typedef enum t_type {
+    CMD,
+	PIPELINE,
+    REDIRECTION,
+    FILE_ARG
+}   t_type;
+
+typedef struct s_arg
 {
-	void	*ptr;
-	struct s_list	*next;
-}	t_list;
+    char            *arg;
+    t_token_type    type;
+}   t_arg;
 
-////////////////////helper_function////////////////////
+typedef struct s_token
+{
+    t_arg   **args;
+    t_type  type;
+    int     heredoc;
+}   t_token;
 
-t_list	*ft_lstnew(void *ptr);
-void	ft_lstadd_back(t_list **lst, t_list *new);
-void	ft_lstdelone(t_list *lst, void (*del)(void*));
-void	ft_lstclear(t_list **lst, void (*del)(void *));
+
+typedef struct s_mp
+{
+	char	**envp;
+	t_token	token;
+}	t_mp;
+
+extern t_list *g_gbc;
+
+////////////////////----parsing----////////////////////
+
+void	check_args(int ac, char **av);
+t_list	*split_phrase(char *s);
+
+
+
+
 
 #endif
