@@ -6,7 +6,7 @@
 /*   By: abenzaho <abenzaho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 19:48:31 by ybenchel          #+#    #+#             */
-/*   Updated: 2025/03/22 12:16:28 by abenzaho         ###   ########.fr       */
+/*   Updated: 2025/04/12 17:53:22 by abenzaho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,10 +69,11 @@ void	check_args(int ac, char **av)
 		printf("┃                                           ┃\n");
 		printf("┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n");
 		printf("\n\n");
-		exit (1);
+		exit(1);
 	}
 }
-void *ft_malloc(size_t size)
+
+void	*ft_malloc(size_t size)
 {
 	void	*ptr;
 	t_list	*tmp;
@@ -81,15 +82,17 @@ void *ft_malloc(size_t size)
 	if (!ptr)
 	{
 		ft_putstr_fd("Error : malloc fail to allocate", 2);
-		return (NULL);
+		ft_lstclear(&g_gbc, free);
+		exit(1);
 	}
 	tmp = ft_lstnew_custom(ptr);
 	if (!tmp)
 	{
 		ft_putstr_fd("Error : malloc fail to allocate", 2);
 		free(ptr);
-		return (NULL);
+		ft_lstclear(&g_gbc, free);
+		exit(1);
 	}
 	ft_lstadd_back(&g_gbc, tmp);
-	return (ptr);	
+	return (ptr);
 }

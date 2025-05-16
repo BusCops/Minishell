@@ -1,40 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tool4.c                                            :+:      :+:    :+:   */
+/*   8_parsing.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abenzaho <abenzaho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/19 17:25:20 by ybenchel          #+#    #+#             */
-/*   Updated: 2025/05/10 15:36:20 by abenzaho         ###   ########.fr       */
+/*   Created: 2025/05/01 18:14:36 by abenzaho          #+#    #+#             */
+/*   Updated: 2025/05/01 19:39:19 by abenzaho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	skip_quotes(char *s, int *i, char c)
+void	inisialise_cmds(t_cmds *cmd)
 {
-	int	j;
-
-	j = *i + 1;
-	while (s[j])
-	{
-		if (s[j] == c)
-			break ;
-		j++;
-	}
-	if (s[j] != '\0')
-		*i = j;
-	else if (s[j] == '\0')
-		*i = j - 1;
+	cmd->cmds = NULL;
+	cmd->files = NULL;
+	cmd->next = NULL;
 }
 
-int	is_delimiter(char c)
+void	handle_file_type(t_file *file, char *s)
 {
-	return (c == ' ' || c == '\t');
-}
-
-int	is_special_char(char c)
-{
-	return (c == '|' || c == '<' || c == '>');
+	if (!ft_strcmp(s, ">>"))
+		file->type = RED_APPEND;
+	else if (!ft_strcmp(s, "<<"))
+		file->type = HEREDOC;
+	else if (!ft_strcmp(s, "<"))
+		file->type = RED_IN;
+	else if (!ft_strcmp(s, ">"))
+		file->type = RED_OUT;
+	file->fd = 0;
 }

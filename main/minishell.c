@@ -3,84 +3,89 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abenzaho <abenzaho@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ybenchel <ybenchel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 14:13:52 by ybenchel          #+#    #+#             */
-/*   Updated: 2025/03/22 12:42:24 by abenzaho         ###   ########.fr       */
+/*   Updated: 2025/05/15 13:48:43 by ybenchel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-t_list *g_gbc;
-/*  need to inisialize this garbage collector and first use ft_lstnew to get the first node
-    use this to add another adresse 					ft_lstadd_back(&g_gbc, *ft_lstnew(ptr))
-	to free all the memory thats allocated use this 	ft_lstclear(t_list &gbc, free)
-    */
+t_list	*g_gbc;
 
-void shell_loop(t_mp *pg)
+void	execution(t_cmds *cmds, t_mp *pg)
 {
-	char    *rl;
-	/*t_token *tokens;
-	t_cmd   *cmds;*/
-	t_list *f;
-	//char	**str;
-	
-	(void)pg;
-	//t_list *current;
+	int		cmd_count;
+	t_cmds	*cmd_ptr;
+
+	if (fill_herdoc(cmds, pg))
+		return ;
+	cmd_ptr = cmds;
+	cmd_count = 0;
+	while (cmd_ptr)
+	{
+		cmd_count++;
+		cmd_ptr = cmd_ptr->next;
+	}
+	if (cmd_count == 1)
+	{
+		execute_one_cmd(cmds, pg);
+		close_files(cmds->files);
+		restor_fd(pg->std_in, pg->std_out);
+	}
+	else
+	{
+		execute_multiple_commands(cmds, cmd_count, pg);
+		restor_fd(pg->std_in, pg->std_out);
+	}
+	return ;
+}
+
+t_cmds	*parsing(char *rl, t_mp *pg)
+{
+	t_arg	*token;
+	t_token	*tokens;
+	t_cmds	*cmds;
+
+	if (!check_unclosed_quotes(rl, pg))
+		return (NULL);
+	token = tokenize(rl, pg);
+	expand_variables(token, pg);
+	handle_var_space(&token);
+	if (check_files_red_err(token))
+		return (NULL);
+	skip_null(&token);
+	if (!token)
+		return (NULL);
+	tokens = tokens_to_cmds(token);
+	cmds = get_final_cmds(tokens);
+	if (check_files(cmds, pg))
+		return (NULL);
+	remove_quotes(cmds);
+	getback_quotes(cmds);
+	return (cmds);
+}
+
+void	shell_loop(t_mp *pg)
+{
+	char	*rl;
+	t_cmds	*cmds;
+
 	while (1)
 	{
 		rl = readline("Minishell$ ");
-		// hadi hiya li katkhdm ctr + d ila haydtiha ctr + d maghatkhdmsh
 		if (!rl)
-		{
-			free(rl);
-		 	return ;
-		}
-			if (ft_strlen(rl))
+			return ;
+		if (ft_strlen(rl))
 		{
 			add_history(rl);
-			f = split_phrase(rl);
-			// while (f != NULL)
-			// {
-			// 	printf("%s\n", (char *)f->ptr);
-			// 	f = f->next;
-			// }
-			// f = NULL;
-			// t_list *current = f;			
-			// while (current != NULL)
-			// {
-			// 	if (current->ptr != NULL)
-			// 		printf("%s\n", (char *)current->ptr);
-			// 	current = current->next;
-			// }
-			//str = ft_split(rl);
-			//int i = 0;
-			//while (str[i])
-			//{
-			//	printf("%s\n",str[i]);
-			//	i++;
-			//}
-			/*// Step 1: Tokenization
-			tokens = tokenize(rl);
-			if (!tokens)
-				allocation_fails();
-
-			// Step 2: Syntax Checking
-			if (check_syntax_error(tokens))
-				allocation_fails();
-				
-			// Step 3: Expand Variables (Replacing $VAR with it's value and handling $?)
-			expand_variables(tokens, pg->env);
-
-			// Step 4: Handle Quotes (Double "" and single ')
-			handle_quotes(tokens);
-
-			// Step 5: Convert Tokens to Commands
-			cmds = parse_tokens(tokens);
-			
-			// Step 6: Execute Commands
-			execute_commands(cmds, pg);*/
+			cmds = parsing(rl, pg);
+			if (!cmds)
+				continue ;
+			execution(cmds, pg);
+			update_env(pg);
+			pg->envs = sort_env(pg->envp);
 		}
 		free(rl);
 	}
@@ -91,12 +96,20 @@ int	main(int ac, char **av, char **env)
 {
 	t_mp	pg;
 
+	pg.exit_status = 0;
+	pg.is_child = 0;
 	g_gbc = ft_lstnew_custom(NULL);
 	check_args(ac, av);
-	pg.envp = init_env(env);
+	pg.env = init_env(env);
+	pg.envp = env;
+	pwd_shvl(&pg);
+	pg.envs = sort_env(pg.envp);
 	print_banner();
 	signal_setup();
+	in_n_out_backup(&pg);
 	shell_loop(&pg);
 	print_exit();
+	close(pg.std_in);
+	close(pg.std_out);
 	ft_lstclear(&g_gbc, free);
 }

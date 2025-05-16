@@ -1,40 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tool4.c                                            :+:      :+:    :+:   */
+/*   bin_cd2.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abenzaho <abenzaho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/19 17:25:20 by ybenchel          #+#    #+#             */
-/*   Updated: 2025/05/10 15:36:20 by abenzaho         ###   ########.fr       */
+/*   Created: 2025/05/10 15:45:43 by abenzaho          #+#    #+#             */
+/*   Updated: 2025/05/10 15:46:32 by abenzaho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	skip_quotes(char *s, int *i, char c)
+void	cd_error(t_mp *pg, char *msg, int status)
 {
-	int	j;
-
-	j = *i + 1;
-	while (s[j])
-	{
-		if (s[j] == c)
-			break ;
-		j++;
-	}
-	if (s[j] != '\0')
-		*i = j;
-	else if (s[j] == '\0')
-		*i = j - 1;
-}
-
-int	is_delimiter(char c)
-{
-	return (c == ' ' || c == '\t');
-}
-
-int	is_special_char(char c)
-{
-	return (c == '|' || c == '<' || c == '>');
+	write(2, "minishell cd: ", 14);
+	write(2, msg, ft_strlen(msg));
+	write(2, "\n", 1);
+	pg->exit_status = status;
 }
