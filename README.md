@@ -46,6 +46,5 @@ Minishell$ cat output.txt
 -rwxr-xr-x 1 abenzaho candidates 66312 May 16 10:27 minishell
 ```
 # 👨‍💻 Authors
-  abenzaho (abdellah benzahour)\n
-  ybenchel (Yassine Benchelh)
-
+abenzaho (abdellah benzahour)
+ybenchel (Yassine Benchelh)
