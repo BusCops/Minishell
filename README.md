@@ -45,6 +45,8 @@ Minishell$ ls -la | grep minishell > output.txt
 Minishell$ cat output.txt 
 -rwxr-xr-x 1 abenzaho candidates 66312 May 16 10:27 minishell
 ```
-# 👨‍💻 Authors
-abenzaho (abdellah benzahour)
-ybenchel (Yassine Benchelh)
+
+## 👨‍💻 Authors
+
+- abenzaho (Abdellah Benzahour)
+- ybenchel (Yassine Benchelh)
