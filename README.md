@@ -1,26 +1,47 @@
 # Minishell
 
-## Introduction
-MiniShell is a simplified Unix shell implemented in C, designed to replicate essential features of a real shell. It supports executing built-in and external commands, environment variable handling, redirections, and pipes. This project strengthens understanding of process control, file descriptors, and terminal behavior in a Unix-like environment.
+Minishell is a simplified Unix shell implemented in C. This project is part of the 42 school curriculum and aims to deepen understanding of process creation, input/output redirection, and signal handling in a Unix-like environment. It replicates key features of a real shell while maintaining simplicity and clarity in its design.
 
-## Features
+---
 
-✅ Execution of built-in commands (cd, echo, pwd, export, unset, env, exit)
+## 📦 Features
 
-✅ Support for external commands using fork, execve, and wait
+- ✅ Execution of **built-in commands**:
+  - `echo`
+  - `cd`
+  - `pwd`
+  - `export`
+  - `unset`
+  - `env`
+  - `exit`
+- ✅ Execution of **external commands**
+- ✅ **Pipes** (`|`) to chain commands
+- ✅ **Redirections**:
+  - Input redirection (`<`)
+  - Output redirection (`>`, `>>`)
+  - Heredoc (`<<`)
+- ✅ **Environment variable expansion** (e.g. `$USER`, `$PATH`, `$?`)
+- ✅ **Quote handling** (`'single quotes'`, `"double quotes"`)
+- ✅ **Signal handling** (`Ctrl+C`, `Ctrl+\`, heredoc interrupt)
+- ✅ Proper **error messages** and **exit status**
+- ✅ **Memory management**: no memory leaks (checked with Valgrind)
 
-✅ Pipes (|) to connect multiple commands
+---
 
-✅ Input (<) and output (>, >>) redirections
+## ⚙️ How to Compile
 
-✅ Heredoc (<<) functionality
+Clone the repository and run `make`:
 
-✅ Environment variable expansion (e.g., $HOME, $?)
-
-✅ Quotes handling ('single' and "double")
-
-✅ Signal handling (e.g., Ctrl+C, Ctrl+\)
-
-✅ Error handling and proper exit status management
-
-✅ No memory leaks (global variable who Collect all adresse and free them later)
+```bash
+git clone https://github.com/yourusername/minishell.git
+cd minishell
+make
+```
+after you can start executing command like bash
+```
+Minishell$ echo Hello World
+Hello World
+Minishell$ ls -la | grep minishell > output.txt
+Minishell$ cat output.txt 
+-rwxr-xr-x 1 abenzaho candidates 66312 May 16 10:27 minishell
+```
